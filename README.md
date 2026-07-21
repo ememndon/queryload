@@ -51,13 +51,26 @@ see the matters they are assigned, role-based access, an audit trail of who
 asked what and which sources were used, and independent retention rules for
 documents, conversations and the audit log.
 
+## Demo video
+
+<p align="center">
+  <a href="https://ememndon.com/videos/queryload.mp4">
+    <img src=".github/assets/queryload.png" width="720" alt="Watch the QueryLoad demo video">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://ememndon.com/videos/queryload.mp4"><b>▶ Watch the demo</b></a><br>
+  <sub>Opens an MP4 in your browser — GitHub cannot play externally hosted video inline.</sub>
+</p>
+
 ## Interface
 
 <p align="center">
-  <img src="design.png" width="720" alt="The QueryLoad interface: sidebar with chat history, centre answer column with inline citations, and the references rail">
+  <img src=".github/assets/homescreen.png" width="820" alt="The QueryLoad home screen: sidebar with chat history, centre answer column with inline citations, and the references rail">
 </p>
 
-Three regions: chat history and workspace switcher on the left, the answer
+Three regions: chat history and the workspace switcher on the left, the answer
 column in the centre, and a references rail on the right listing every source
 behind the current answer. Citation markers in the text are clickable and open
 the document at the cited page.
