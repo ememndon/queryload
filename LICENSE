@@ -1,0 +1,49 @@
+QueryLoad — Proprietary Software Licence
+
+Copyright (c) 2026 Emem Ndon. All rights reserved.
+
+This repository is published for the sole purpose of review and evaluation —
+for example by prospective employers, collaborators, or clients wishing to
+assess the author's work.
+
+You MAY:
+
+  - View and read the source code.
+  - Clone the repository locally for the purpose of reading, reviewing, or
+    running it to evaluate the author's work.
+
+You MAY NOT, without prior written permission from the copyright holder:
+
+  - Use this software, in whole or in part, for any commercial purpose.
+  - Copy, reproduce, or incorporate any portion of this source code into
+    another work, product, or repository.
+  - Modify, adapt, or create derivative works based on this software.
+  - Distribute, publish, sublicense, sell, or otherwise make this software
+    available to third parties.
+  - Deploy or operate this software as a service.
+
+No trademark rights are granted in the name "QueryLoad" or its logo.
+
+THIRD-PARTY COMPONENTS
+
+This software depends on third-party open-source packages, each governed by its
+own licence as declared in its respective package metadata. Those licences are
+unaffected by this one and continue to apply to those components.
+
+The language models the application can download are not included in this
+repository and are distributed by their respective publishers under their own
+licences (Apache 2.0, MIT, the Llama Community Licence, and the Gemma Terms of
+Use). Users are responsible for complying with the licence of any model they
+choose to download.
+
+NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+This software is in active development and is not released for production use.
