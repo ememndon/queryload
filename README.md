@@ -9,6 +9,19 @@
   entirely on your machine, with every answer traceable to the page it came from.
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/status-in%20development-orange" alt="Status: in development">
+  <img src="https://img.shields.io/badge/platform-Windows-0b7fc4" alt="Platform: Windows">
+  <img src="https://img.shields.io/badge/TypeScript-strict-3178c6" alt="TypeScript strict">
+  <img src="https://img.shields.io/badge/runs-fully%20offline-4f9d69" alt="Runs fully offline">
+</p>
+
+> **This project is in active development.**
+> It runs, indexes documents and returns grounded, cited answers from a local
+> model — but it is not finished and not released. There is no installer yet,
+> and behaviour is still changing. [Status](#status) gives a plain account of
+> what is and is not done.
+
 ---
 
 ## What it is
@@ -127,8 +140,9 @@ across 8 acceptance suites, run by a single command.
 
 ## Status
 
-**Built and working; not shipped.** The app runs, indexes documents and returns
-grounded, cited answers from a local model. What is *not* done:
+**In development — built and working, not shipped.** The app runs, indexes
+documents and returns grounded, cited answers from a local model. What is *not*
+done:
 
 - No signed installer has been produced. Packaging is configured and its parts
   proven individually, but no release build exists yet.
