@@ -1,13 +1,20 @@
 # Repository assets
 
-Images referenced by the root `README.md`. The two PNGs currently in this folder
-are **placeholders** — replace them with real captures, keeping the same
-filenames so the README needs no edit.
+Images referenced by the root `README.md`.
 
-| File | Used for | Recommended size |
+| File | Used for | Current |
 |---|---|---|
-| `homescreen.png` | The "Interface" section — the app in use | 1280 × 800 (16:10), or any 16:10 capture of the window |
-| `queryload.png` | Clickable poster for the demo video | 1280 × 720 (16:9) |
+| `homescreen.png` | The "Interface" section — the app in use | 1600 × 852 PNG |
+| `queryload.jpg` | Clickable poster for the demo video | 1920 × 1080 JPEG |
+
+**Filenames are case-sensitive on GitHub.** `Homescreen.png` and
+`homescreen.png` are two different files there, even though Windows treats them
+as one locally — so a capitalised upload silently leaves the README pointing at
+nothing. Keep these names exactly as written when replacing them.
+
+Match the extension to the actual file format too. A JPEG named `.png` usually
+still renders, because browsers sniff the content, but it misleads any tool that
+trusts the extension.
 
 ## homescreen.png
 

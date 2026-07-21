@@ -55,7 +55,7 @@ documents, conversations and the audit log.
 
 <p align="center">
   <a href="https://ememndon.com/videos/queryload.mp4">
-    <img src=".github/assets/queryload.png" width="720" alt="Watch the QueryLoad demo video">
+    <img src=".github/assets/queryload.jpg" width="720" alt="Watch the QueryLoad demo video">
   </a>
 </p>
 
