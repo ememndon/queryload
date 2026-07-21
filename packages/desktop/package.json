@@ -1,0 +1,15 @@
+{
+  "name": "@queryload/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "electron .",
+    "start": "electron .",
+    "build": "tsc -b",
+    "clean": "rimraf dist tsconfig.tsbuildinfo"
+  },
+  "devDependencies": {
+    "@queryload/shared": "*"
+  }
+}

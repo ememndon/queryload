@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      The authoritative Content-Security-Policy is injected by the Electron
+      session (packages/desktop/src/security/session-hardening.ts) on every
+      response, and is dev/prod aware. It forbids all remote content: the
+      renderer may only connect to the loopback engine over HTTPS.
+    -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <title>QueryLoad</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

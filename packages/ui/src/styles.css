@@ -1,0 +1,1065 @@
+/*
+ * QueryLoad — dark editorial theme (binding: Decision Log D75–D80, design.png).
+ * Sole theme. No gradients, glows, shadows, or light mode.
+ *
+ * D79 (the flaw fix): the composer lives INSIDE the center column's grid track,
+ * shares its max-width, and never spans under the References rail. The shell is
+ * a three-column grid (sidebar | center | references); the composer sits in the
+ * center column's second row — structurally incapable of overlapping the rail.
+ * A regression test (layout.test.tsx) asserts this.
+ */
+:root {
+  --ql-color-canvas: #0f0f0e;
+  --ql-color-divider: #262624;
+  --ql-color-input-surface: #161615;
+  --ql-color-input-border: #2a2a28;
+  --ql-color-text-primary: #ede8dc;
+  --ql-color-text-user-query: #e8e4da;
+  --ql-color-text-body: #a8a49b;
+  --ql-color-text-muted: #6e6a63;
+  --ql-color-text-label: #56534d;
+  --ql-color-accent: #e5484d;
+  /* Healthy / running. The coral accent (D77) reads as an error on a state that
+     is working correctly, so a ready model is green. Muted to sit with the warm
+     palette rather than shouting. */
+  --ql-color-success: #4f9d69;
+  /* Citations and the live processing state. Amber rather than the coral accent:
+     a citation is a neutral pointer into a document, and red made the rail look
+     like a wall of errors. */
+  --ql-color-reference: #d98a3d;
+  /* Elevated surface for floating menus, one step above the input surface. */
+  --ql-color-menu-surface: #1e1e1c;
+
+  --ql-font-serif: 'Source Serif 4', 'Lora', Georgia, 'Times New Roman', serif;
+  --ql-font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  --ql-sidebar-w: 232px;
+  --ql-refs-w: 232px;
+  --ql-column-max: 640px;
+  --ql-column-pad: 40px;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+body {
+  background: var(--ql-color-canvas);
+  color: var(--ql-color-text-body);
+  font-family: var(--ql-font-sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+button {
+  font-family: inherit;
+}
+
+/* Section labels — uppercase, letter-spaced, 11px (D76). */
+.label {
+  font-family: var(--ql-font-sans);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ql-color-text-label);
+}
+
+/* Reserved accent (D77) — processing and live states ONLY. */
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ql-color-reference);
+  flex: 0 0 auto;
+  animation: ql-pulse 1.4s ease-in-out infinite;
+}
+.live-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ql-color-reference);
+}
+
+/*
+ * Generation on a CPU-only machine can sit for a long time before the first
+ * word arrives, so the indicator has to prove it is still alive rather than
+ * looking frozen: the dot breathes and the ellipsis cycles.
+ */
+@keyframes ql-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.live-ellipsis::after {
+  content: '';
+  animation: ql-ellipsis 1.6s steps(1, end) infinite;
+}
+@keyframes ql-ellipsis {
+  0% {
+    content: '';
+  }
+  25% {
+    content: '.';
+  }
+  50% {
+    content: '..';
+  }
+  75% {
+    content: '...';
+  }
+}
+/* Respect a reduced-motion preference: keep a static, complete indicator. */
+@media (prefers-reduced-motion: reduce) {
+  .live-dot {
+    animation: none;
+  }
+  .live-ellipsis::after {
+    content: '…';
+    animation: none;
+  }
+}
+
+/* ===================== Three-region shell ===================== */
+.shell {
+  display: grid;
+  grid-template-columns: var(--ql-sidebar-w) minmax(0, 1fr) var(--ql-refs-w);
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ---------- Left sidebar (D78) ---------- */
+.sidebar {
+  grid-column: 1;
+  border-right: 1px solid var(--ql-color-divider);
+  display: flex;
+  flex-direction: column;
+  padding: 22px 16px 16px;
+  min-width: 0;
+}
+.sidebar-word {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--ql-font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ql-color-text-primary);
+  letter-spacing: 0.01em;
+  padding: 0 6px 20px;
+}
+/* The mark is decorative — the wordmark beside it already names the app, so the
+   img carries an empty alt and screen readers announce "QueryLoad" once.
+   42px carries the mark against the 22px wordmark; 24 and 32 both read as an
+   afterthought beside it. The inlined source is 128px, so this still has ~3x
+   pixel headroom on a high-DPI screen. */
+.sidebar-mark {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  display: block;
+}
+.sidebar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px 8px;
+}
+.new-chat {
+  background: none;
+  border: none;
+  color: var(--ql-color-text-body);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0;
+}
+.new-chat:hover {
+  color: var(--ql-color-text-primary);
+}
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--ql-color-text-muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px;
+}
+.sidebar-search {
+  margin: 10px 6px 14px;
+}
+.sidebar-search input {
+  width: 100%;
+  background: var(--ql-color-input-surface);
+  border: 1px solid var(--ql-color-input-border);
+  border-radius: 8px;
+  color: var(--ql-color-text-body);
+  font-size: 12px;
+  padding: 7px 10px;
+  outline: none;
+}
+.sidebar-search input::placeholder {
+  color: var(--ql-color-text-muted);
+}
+/* The workspace picker is a Dropdown; style its root + trigger. */
+.workspace-select {
+  display: block;
+  margin: 0 6px 10px;
+  width: calc(100% - 12px);
+  border-bottom: 1px solid var(--ql-color-divider);
+}
+.workspace-select .dropdown-trigger {
+  width: 100%;
+  justify-content: space-between;
+  color: var(--ql-color-text-body);
+  font-size: 12px;
+  padding: 6px 2px;
+}
+.workspace-select .dropdown-value {
+  max-width: none;
+}
+.chat-history {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  margin-top: 6px;
+}
+.history-group-label {
+  padding: 12px 6px 6px;
+}
+.history-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--ql-color-text-body);
+  font-size: 13px;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.history-item:hover {
+  color: var(--ql-color-text-primary);
+}
+/* Row wrapper: the title button plus a delete control that stays out of the way
+   until the row is hovered or focused, so the list still reads as a quiet list. */
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.history-row.active .history-item {
+  color: var(--ql-color-text-primary);
+}
+.history-delete {
+  flex: 0 0 auto;
+  background: none;
+  border: none;
+  color: var(--ql-color-text-muted);
+  font-size: 15px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.history-row:hover .history-delete,
+.history-delete:focus-visible {
+  opacity: 1;
+}
+.history-delete:hover {
+  color: var(--ql-color-accent);
+}
+.sidebar-footer {
+  border-top: 1px solid var(--ql-color-divider);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.footer-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  color: var(--ql-color-text-body);
+  font-size: 13px;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+.footer-item:hover {
+  color: var(--ql-color-text-primary);
+}
+.footer-item .glyph {
+  color: var(--ql-color-text-muted);
+}
+
+/* ---------- Center column ---------- */
+.center {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.center-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 40px var(--ql-column-pad) 8px;
+}
+.center-inner {
+  max-width: var(--ql-column-max);
+  /* Centre the reading column within the (wider) center track. */
+  margin-left: auto;
+  margin-right: auto;
+}
+.matter-title {
+  font-family: var(--ql-font-serif);
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--ql-color-text-primary);
+  line-height: 1.2;
+  margin: 0 0 22px;
+}
+.intent-block {
+  margin-bottom: 18px;
+}
+.intent-block .label {
+  display: block;
+  margin-bottom: 8px;
+}
+.user-query {
+  font-family: var(--ql-font-serif);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ql-color-text-user-query);
+}
+.answer {
+  font-family: var(--ql-font-serif);
+  font-size: 16px;
+  line-height: 1.75; /* >= 1.7 (D76) */
+  color: var(--ql-color-text-body);
+  white-space: pre-wrap;
+  margin-bottom: 18px;
+}
+.cite-marker {
+  color: var(--ql-color-reference);
+  font-family: var(--ql-font-sans);
+  font-size: 11px;
+  vertical-align: super;
+  padding: 0 1px;
+  cursor: default;
+}
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 0 2px;
+  border-top: 1px solid var(--ql-color-divider);
+  margin-top: 10px;
+}
+.action-row .action {
+  background: none;
+  border: none;
+  color: var(--ql-color-text-muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+}
+.action-row .action:hover {
+  color: var(--ql-color-text-body);
+}
+.action-row .timestamp {
+  margin-left: auto;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ql-color-text-label);
+}
+.processing {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 4px;
+}
+.center-empty {
+  margin-top: 12vh;
+  text-align: left;
+}
+.center-empty .wordmark {
+  font-family: var(--ql-font-serif);
+  font-size: 40px;
+  color: var(--ql-color-text-primary);
+}
+.center-empty .tagline {
+  font-family: var(--ql-font-serif);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ql-color-text-body);
+  max-width: 460px;
+  margin-top: 12px;
+}
+
+/* Composer — INSIDE the center column track (D79). */
+.composer-wrap {
+  flex: 0 0 auto;
+  padding: 12px var(--ql-column-pad) 26px;
+}
+.composer-inner {
+  max-width: var(--ql-column-max);
+  /* Same centring as .center-inner so the composer stays aligned with the
+     reading column above it (still inside the center track — D79). */
+  margin-left: auto;
+  margin-right: auto;
+}
+.pins {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.pin-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--ql-color-text-body);
+  border: 1px solid var(--ql-color-divider);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.pin-chip button {
+  background: none;
+  border: none;
+  color: var(--ql-color-text-muted);
+  cursor: pointer;
+}
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--ql-color-input-surface);
+  border: 1px solid var(--ql-color-input-border);
+  border-radius: 18px;
+  padding: 14px 16px 12px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.32);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.composer:focus-within {
+  border-color: var(--ql-color-text-muted);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.42);
+}
+.composer-input {
+  width: 100%;
+  min-height: 26px;
+  max-height: 200px;
+  resize: none;
+  overflow-y: auto;
+  background: none;
+  border: none;
+  color: var(--ql-color-text-primary);
+  font-family: var(--ql-font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  outline: none;
+  padding: 2px 2px 0;
+}
+.composer-input::placeholder {
+  color: var(--ql-color-text-muted);
+}
+/* Controls row beneath the input (task picker on the left, send on the right). */
+.composer-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* The card itself shows focus via :focus-within — the input needs no inner box. */
+.composer-input:focus-visible {
+  outline: none;
+}
+.composer-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: none;
+  border: none;
+  color: var(--ql-color-text-muted);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
+}
+.composer-add:hover {
+  color: var(--ql-color-text-primary);
+  background: var(--ql-color-input-border);
+}
+
+/*
+ * Accessibility: a visible keyboard-focus indicator app-wide. Many inputs set
+ * `outline: none`; this restores a focus ring for keyboard users only
+ * (:focus-visible never triggers on mouse click, so the resting look is
+ * unchanged). Uses the neutral primary text color, not the reserved accent.
+ */
+:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--ql-color-text-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+/* The model picker sits beside the task picker in the composer bar. Muted, so
+   the two controls read as one row rather than competing. */
+.model-picker .dropdown-trigger {
+  color: var(--ql-color-text-label);
+  max-width: 190px;
+}
+.model-picker .dropdown-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.composer-send {
+  margin-left: auto; /* push the send button to the right of the controls row */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: var(--ql-color-text-primary);
+  color: var(--ql-color-canvas);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition:
+    opacity 0.15s ease,
+    transform 0.05s ease;
+}
+/* The send arrow points up (submit), not right. Slightly larger and heavier so
+   the glyph reads as solid inside the filled circle. */
+.composer-send-arrow {
+  font-size: 17px;
+  font-weight: 600;
+}
+.composer-send:hover:not(:disabled) {
+  opacity: 0.85;
+}
+.composer-send:active:not(:disabled) {
+  transform: scale(0.95);
+}
+.composer-send:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/*
+ * Themed dropdown. A native <select> renders its list through the OS and
+ * ignores our CSS, which is why it appeared as a white system menu in the dark
+ * UI. This is the styled replacement.
+ */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--ql-color-text-muted);
+  font-family: var(--ql-font-sans);
+  font-size: 12px;
+  padding: 5px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.dropdown-trigger:hover {
+  color: var(--ql-color-text-primary);
+}
+.dropdown-value {
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dropdown-chevron {
+  font-size: 13px;
+  line-height: 1;
+  opacity: 0.75;
+}
+.dropdown-menu {
+  position: absolute;
+  z-index: 40;
+  left: 0;
+  min-width: 220px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--ql-color-menu-surface);
+  border: 1px solid var(--ql-color-input-border);
+  border-radius: 12px;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+}
+.dropdown-bottom {
+  top: calc(100% + 6px);
+}
+.dropdown-top {
+  bottom: calc(100% + 8px);
+}
+.dropdown-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--ql-color-text-body);
+  font-size: 13px;
+  cursor: pointer;
+}
+.dropdown-option.is-active {
+  background: var(--ql-color-input-border);
+  color: var(--ql-color-text-primary);
+}
+.dropdown-option[aria-selected='true'] {
+  color: var(--ql-color-text-primary);
+}
+.dropdown-check {
+  font-size: 12px;
+  color: var(--ql-color-text-primary);
+}
+
+/* ---------- Right References rail (the evidence system, D78) ---------- */
+.references {
+  grid-column: 3;
+  border-left: 1px solid var(--ql-color-divider);
+  padding: 40px 16px;
+  overflow-y: auto;
+}
+.references .label {
+  display: block;
+  margin-bottom: 16px;
+}
+.ref-entry {
+  position: relative;
+  margin-bottom: 14px;
+}
+.ref-open {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ql-color-reference);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.ref-doc,
+.ref-name {
+  color: var(--ql-color-reference);
+}
+.ref-pin {
+  background: none;
+  border: none;
+  color: var(--ql-color-text-muted);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 2px;
+}
+.ref-card {
+  display: none;
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 0;
+  width: 240px;
+  background: var(--ql-color-input-surface);
+  border: 1px solid var(--ql-color-input-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ql-color-text-body);
+  z-index: 5;
+}
+.ref-entry:hover .ref-card {
+  display: block;
+}
+.muted {
+  color: var(--ql-color-text-muted);
+}
+.small {
+  font-size: 12px;
+}
+.banner-warn {
+  border: 1px solid var(--ql-color-accent);
+  color: var(--ql-color-text-primary);
+  background: rgba(229, 72, 77, 0.08);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 10px 0;
+}
+
+/* ===================== Settings surface (Documents / Model / Account) ===================== */
+.settings-surface {
+  grid-column: 2 / span 2;
+  overflow-y: auto;
+  padding: 32px 40px 64px;
+}
+.settings-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--ql-color-divider);
+}
+.settings-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--ql-color-text-muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.settings-tab.active {
+  color: var(--ql-color-text-primary);
+  border-bottom-color: var(--ql-color-accent);
+}
+.settings-hint {
+  color: var(--ql-color-text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 6px 0 18px;
+}
+
+/* Shared controls */
+.btn {
+  border-radius: 8px;
+  font-size: 13px;
+  padding: 9px 14px;
+  cursor: pointer;
+  border: 1px solid var(--ql-color-input-border);
+  background: var(--ql-color-input-surface);
+  color: var(--ql-color-text-body);
+  white-space: nowrap;
+}
+.btn:hover:not(:disabled) {
+  border-color: var(--ql-color-text-muted);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.btn-primary {
+  background: var(--ql-color-text-primary);
+  color: var(--ql-color-canvas);
+  border-color: var(--ql-color-text-primary);
+  font-weight: 500;
+}
+.btn-ghost {
+  background: none;
+}
+
+.path-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.path-input {
+  flex: 1 1 auto;
+  background: var(--ql-color-input-surface);
+  border: 1px solid var(--ql-color-input-border);
+  border-radius: 8px;
+  color: var(--ql-color-text-primary);
+  font-size: 13px;
+  padding: 10px 12px;
+  outline: none;
+}
+.path-input::placeholder {
+  color: var(--ql-color-text-muted);
+}
+.banner {
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.banner-error {
+  border: 1px solid var(--ql-color-input-border);
+  color: var(--ql-color-text-primary);
+  background: var(--ql-color-input-surface);
+}
+.path-list,
+.model-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+.empty {
+  color: var(--ql-color-text-muted);
+  font-size: 13px;
+  padding: 24px;
+  text-align: center;
+  border: 1px dashed var(--ql-color-divider);
+  border-radius: 8px;
+}
+.path-card,
+.model-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  border: 1px solid var(--ql-color-divider);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.model-row.active {
+  border-color: var(--ql-color-success);
+}
+.path-card-main,
+.model-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.path-name,
+.model-name {
+  color: var(--ql-color-text-primary);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.model-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+.path-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 12px;
+}
+.model-meta {
+  margin-top: 4px;
+  font-size: 12px;
+}
+.model-reason {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--ql-color-text-muted);
+}
+/* What the model is good for — sits above the hardware verdict, and reads as
+   description rather than status, so it takes the label colour. */
+.model-note {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--ql-color-text-label);
+}
+/* Group heading for the catalog, which is now grouped by machine class. */
+.model-tier-label {
+  margin-top: 22px;
+}
+.path-banner {
+  margin-top: 8px;
+  color: var(--ql-color-accent);
+  font-size: 12px;
+}
+.chip {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--ql-color-divider);
+  color: var(--ql-color-text-body);
+}
+.chip-scanning,
+.chip-offline,
+.chip-elig-warn {
+  color: var(--ql-color-accent);
+  border-color: var(--ql-color-accent);
+}
+/* The running model. A healthy, settled state — not an alert. */
+.chip-active {
+  color: var(--ql-color-success);
+  border-color: var(--ql-color-success);
+}
+.model-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Secondary, destructive-adjacent action — present but never competing with
+   the primary button next to it. */
+.btn-quiet {
+  color: var(--ql-color-text-muted);
+  border-color: transparent;
+}
+.btn-quiet:hover:not(:disabled) {
+  color: var(--ql-color-text-primary);
+  border-color: var(--ql-color-input-border);
+}
+.hw-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid var(--ql-color-divider);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--ql-color-text-body);
+  margin-bottom: 16px;
+}
+.progress {
+  position: relative;
+  height: 20px;
+  margin-top: 10px;
+  background: var(--ql-color-input-surface);
+  border: 1px solid var(--ql-color-input-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.progress-bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: rgba(229, 72, 77, 0.25);
+  transition: width 0.4s ease;
+}
+.progress-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--ql-color-text-body);
+}
+.quarantine {
+  margin-top: 32px;
+}
+.quarantine-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ql-color-divider);
+  font-size: 12px;
+}
+.q-path {
+  color: var(--ql-color-text-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.totals {
+  margin-top: 24px;
+  color: var(--ql-color-text-muted);
+  font-size: 12px;
+}
+
+/* Drag-drop + wizard modals */
+.drop-modal,
+.wizard {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+.drop-card,
+.wizard-card {
+  background: var(--ql-color-canvas);
+  border: 1px solid var(--ql-color-input-border);
+  border-radius: 14px;
+  padding: 28px 32px;
+  max-width: 560px;
+  width: 90%;
+}
+.drop-title,
+.wizard-title {
+  font-family: var(--ql-font-serif);
+  color: var(--ql-color-text-primary);
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+.wizard-step {
+  color: var(--ql-color-text-body);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.wizard-actions,
+.drop-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.wizard-progress {
+  margin-bottom: 16px;
+}
+
+/* Network-quiet status (subtle; D70) — lives in the sidebar footer. */
+/* "All local" is reassurance, not an alert — so its dot is green, and static:
+   it reports a settled fact, not activity. The pulsing accent dot is kept for
+   the genuine live state (Processing), per D77. */
+.net-quiet .live-dot {
+  background: var(--ql-color-success);
+  animation: none;
+}
+.net-quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ql-color-text-label);
+}

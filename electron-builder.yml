@@ -1,0 +1,86 @@
+# electron-builder configuration for QueryLoad.
+# Produces an NSIS installer and an MSI (for org/IT silent deployment, D25/D15).
+# Full packaging — bundling the compiled engine + renderer + native/inference
+# binaries — is finalized in Phase 7. This config establishes the targets and
+# the offline-by-default posture now.
+appId: ai.tenslor.queryload
+productName: QueryLoad
+copyright: © Tenslor
+# The compiled Electron main lives in packages/desktop/dist.
+directories:
+  output: release
+  buildResources: build
+
+# Never auto-publish; updates are manual, signed, and offline-installable (D10).
+publish: null
+
+# After packing, rebuild the engine's native modules (better-sqlite3-multiple-
+# ciphers) for Electron's Node ABI — the engine runs under ELECTRON_RUN_AS_NODE.
+afterPack: scripts/afterpack-rebuild.cjs
+
+files:
+  - from: packages/desktop/dist
+    to: .
+    filter:
+      - '**/*'
+  # Window/taskbar icon, read at runtime by createMainWindow. Without this the
+  # packaged app resolves an icon path that was never shipped.
+  - from: packages/desktop/assets
+    to: assets
+    filter:
+      - '**/*'
+
+# The engine and the renderer bundle are shipped as unpacked resources so the
+# engine can run as a standalone Node/Windows-Service process.
+#
+# IMPORTANT: `engine` is the STAGED bundle produced by `scripts/stage-engine.mjs`
+# (dist + a production node_modules incl. @queryload/shared), NOT packages/engine/
+# dist alone — otherwise the engine cannot resolve its runtime dependencies and
+# dies on first require. Run `npm run stage:engine` before packaging (the `dist`
+# script does this).
+extraResources:
+  - from: staging/engine
+    to: engine
+  - from: packages/ui/dist
+    to: renderer
+  # The synthetic demo corpus ships with the app and is indexed on first run (D72).
+  - from: corpus
+    to: corpus
+  # The llama.cpp inference runtime (D18/D18a). BUNDLED, not downloaded, so the
+  # app can answer offline from first launch and makes no network call to obtain
+  # it. Populate with `npm run fetch:runtime` before packaging — `npm run dist`
+  # does this, and `verify:runtime` fails the build if it is missing.
+  - from: vendor/llama/win32-x64
+    to: runtime
+
+win:
+  # A real multi-resolution .ico (16/24/32/48/64/128/256), built by
+  # scripts/build-icon.mjs from the renditions in build/icons. Supplying the
+  # .ico rather than a .png means the exact renderings we checked are what
+  # Windows uses, instead of a conversion done at package time.
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: msi
+      arch:
+        - x64
+  # Code signing is deferred past MVP (D15); wire the certificate in before wide
+  # distribution to avoid SmartScreen friction.
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  # No bundled runtime pings; the installer is the only network touch-point, and
+  # only to fetch models on first run (user-initiated).
+
+msi:
+  oneClick: false
+  perMachine: true
+  # Silent install for IT deployment (D25):
+  #   msiexec /i QueryLoad.msi /qn /norestart
+  # Optionally target a directory:
+  #   msiexec /i QueryLoad.msi /qn INSTALLDIR="C:\Program Files\QueryLoad"
+  runAfterFinish: false

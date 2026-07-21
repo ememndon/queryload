@@ -1,0 +1,67 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+out/
+build/
+release/
+*.tsbuildinfo
+
+# Electron / packaging
+packages/desktop/dist/
+packages/desktop/out/
+packages/ui/dist/
+packages/engine/dist/
+packages/shared/dist/
+
+# Runtime / local state (must never be committed — may contain secrets)
+*.log
+logs/
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+engine.runtime.json
+.env
+.env.*
+
+# Dev-only app-data root (certs, config, logs) created by `npm run dev`
+.devdata/
+
+# Staged engine bundle produced by `npm run stage:engine` for packaging
+staging/
+
+# Downloaded model artifacts & inference binaries (provisioned at first run, never committed).
+# Anchored to the repo root (/models/) so it does NOT match packages/engine/src/models/ —
+# that directory is SOURCE (catalog, eligibility, download, model-manager) and must be tracked.
+# The actual artifacts are covered by *.gguf and vendor/llama/ regardless.
+/models/
+vendor/llama/
+*.gguf
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.recommended.json
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# SBOM output lands in dist-meta/ at build time
+dist-meta/
+
+# Generated icon renditions — rebuilt by scripts/render-icons.ps1 + build-icon.mjs
+# from logo.png. The assembled icon IS tracked (electron-builder.yml points at
+# it), so it must be un-ignored: line 9 ignores build/ wholesale, and without
+# these exceptions a clean clone cannot package.
+build/icons/
+!build/icon.ico
+!build/icon.png
