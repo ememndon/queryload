@@ -1,6 +1,6 @@
-FICTIONAL DEMO DOCUMENT — for QueryLoad demonstration only. Not a real patient. Not medical advice.
+FICTIONAL DEMO DOCUMENT. For QueryLoad demonstration only. Not a real patient. Not medical advice.
 
-MARLOWE FAMILY CLINIC — NEW PATIENT INTAKE
+MARLOWE FAMILY CLINIC: NEW PATIENT INTAKE
 
 Patient: Jordan Rivera (fictional)
 DOB: 1986-07-19  ·  MRN: DEMO-004821
@@ -16,9 +16,9 @@ Medications: Lisinopril 10 mg once daily.
 
 Allergies: Penicillin (rash).
 
-Family history: Father — myocardial infarction at age 58. Mother — type 2 diabetes.
+Family history: Father had a myocardial infarction at age 58. Mother has type 2 diabetes.
 
-Social history: Non-smoker. Alcohol 2–3 drinks/week. Sedentary desk job.
+Social history: Non-smoker. Alcohol 2 to 3 drinks/week. Sedentary desk job.
 
 Vitals: BP 148/94 mmHg, HR 82, Temp 36.8°C, BMI 29.1.
 

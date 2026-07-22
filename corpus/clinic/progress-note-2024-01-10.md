@@ -1,6 +1,6 @@
-FICTIONAL DEMO DOCUMENT — for QueryLoad demonstration only. Not a real patient. Not medical advice.
+FICTIONAL DEMO DOCUMENT. For QueryLoad demonstration only. Not a real patient. Not medical advice.
 
-MARLOWE FAMILY CLINIC — PROGRESS NOTE
+MARLOWE FAMILY CLINIC: PROGRESS NOTE
 Patient: Jordan Rivera (fictional)  ·  MRN: DEMO-004821
 Date: 2024-01-10  ·  Provider: Dr. A. Bo… (Dr. Amara Bello)
 
@@ -10,7 +10,7 @@ Objective: BP 152/96 mmHg (elevated), HR 78. In-clinic ECG shows normal sinus rh
 
 Assessment:
 1. Stage 2 hypertension, suboptimally controlled on current regimen.
-2. Exertional chest tightness — atypical; cannot exclude stable angina given family history and risk profile.
+2. Exertional chest tightness, atypical; cannot exclude stable angina given family history and risk profile.
 
 Plan:
 - Increase lisinopril to 20 mg once daily.

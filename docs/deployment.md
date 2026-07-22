@@ -1,7 +1,7 @@
-# QueryLoad — Organization Deployment (Server Mode)
+# QueryLoad Organization Deployment (Server Mode)
 
 **Pattern B (D25).** One office machine runs the QueryLoad engine as a server;
-staff connect from their own machines with the dedicated client — never a
+staff connect from their own machines with the dedicated client, never a
 browser. Everything stays on the LAN; nothing leaves the building.
 
 ## 1. Set up the server
@@ -18,7 +18,7 @@ browser. Everything stays on the LAN; nothing leaves the building.
    the engine (or the service) so it binds the LAN.
 4. Add document folders and assign them to workspaces (matters / patients /
    clients). Create user accounts and assign each user to the workspaces they
-   may see — membership is the ethical wall (D54).
+   may see. Membership is the ethical wall (D54).
 5. Copy the **join code** shown in Organization Mode and share it with staff.
 
 ## 2. Connect a client machine
@@ -29,7 +29,7 @@ browser. Everything stays on the LAN; nothing leaves the building.
    the server, or paste the **join code**.
 3. The join code pins the server's certificate (trust bootstrap) and authorizes
    the device. The user then signs in with their account.
-4. The client stores only UI preferences and the connection config — **no
+4. The client stores only UI preferences and the connection config, with **no
    document content and no chat cache** live on the client (chat history is
    kept server-side under the user's account, D34/D58).
 

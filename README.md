@@ -5,7 +5,7 @@
 <h1 align="center">QueryLoad</h1>
 
 <p align="center">
-  A desktop app that answers questions about your own documents —<br>
+  A desktop app that answers questions about your own documents,<br>
   entirely on your machine, with every answer traceable to the page it came from.
 </p>
 
@@ -20,7 +20,7 @@
 
 > **This project is in active development.**
 > It runs, indexes documents and returns grounded, cited answers from a local
-> model — but it is not finished and not released. There is no installer yet,
+> model, but it is not finished and not released. There is no installer yet,
 > and behaviour is still changing. [Status](#status) gives a plain account of
 > what is and is not done.
 
@@ -28,8 +28,8 @@
 
 ## What it is
 
-Point QueryLoad at a folder of documents — contracts, case files, patient
-records, correspondence — and ask questions in plain English. It reads PDFs,
+Point QueryLoad at a folder of documents such as contracts, case files, patient
+records or correspondence, then ask questions in plain English. It reads PDFs,
 Word files, emails (including Outlook `.pst` archives), spreadsheets and scanned
 images, and answers using only what those documents actually say.
 
@@ -61,7 +61,7 @@ documents, conversations and the audit log.
 
 <p align="center">
   <a href="https://ememndon.com/videos/queryload.mp4"><b>▶ Watch the demo</b></a><br>
-  <sub>Opens an MP4 in your browser — GitHub cannot play externally hosted video inline.</sub>
+  <sub>Opens an MP4 in your browser. GitHub cannot play externally hosted video inline.</sub>
 </p>
 
 ## Interface
@@ -80,7 +80,7 @@ the document at the cited page.
 **Document intake**
 - 19 file types: PDF, DOCX, EML, MSG, PST (Outlook archives), TXT, MD, CSV, LOG,
   and images (PNG, JPG, TIFF, BMP, GIF, WEBP)
-- Folder watching — new and changed files are re-indexed automatically
+- Folder watching, so new and changed files are re-indexed automatically
 - Page-level and character-level offsets retained per chunk, so a citation
   points at a location rather than a whole file
 - Failed extractions are quarantined with the reason, not silently skipped
@@ -88,7 +88,7 @@ the document at the cited page.
 
 **Answering**
 - Retrieval scoped to the active workspace, enforced inside the query
-- Relevance floor — weak matches are dropped rather than padded into the prompt
+- A relevance floor, so weak matches are dropped rather than padded into the prompt
 - Pinned files always enter the context, without crowding out retrieval
 - Grounded refusal when the corpus does not cover the question
 - Streaming answers with a stop control
@@ -99,7 +99,8 @@ the document at the cited page.
 **Local models**
 - Curated catalogue of **23 models, 0.8 GB to 44 GB**, every one under a licence
   permitting commercial use (Apache 2.0, MIT, Llama Community, Gemma)
-- Hardware check first — RAM, CPU, GPU and free disk — marking which models fit
+- Hardware check first, covering RAM, CPU, GPU and free disk, marking which
+  models fit
 - Resumable, size-verified downloads; cancel, resume and discard
 - One model active at a time, swappable without leaving the conversation
 - Parallel request slots with per-user round-robin fairness and queue position
@@ -111,14 +112,14 @@ the document at the cited page.
 - Retention policies applied independently to documents, chats and the audit log
 - Organization mode: one machine serves the office over the LAN, discovered via
   mDNS and joined with a code
-- Diagnostic bundle for support — logs, config and hardware, never document
-  content
+- Diagnostic bundle for support, carrying logs, config and hardware, never
+  document content
 
 **Security**
 - Loopback HTTPS with a self-signed certificate pinned by SHA-256 fingerprint
 - Metadata database encrypted (SQLCipher); key sealed to the machine by Windows
   DPAPI
-- Text and vectors stored separately — the vector index holds no document text
+- Text and vectors stored separately, so the vector index holds no document text
 - Argon2id password hashing; sessions stored as hashes and revocable
 - Electron hardening: context isolation, sandbox, no node integration, strict
   CSP, navigation and permission requests denied by default
@@ -137,17 +138,17 @@ the document at the cited page.
                                     │ spawns
                                     ▼
    ┌────────────┐   loopback   ┌──────────────────────────────────────┐
-   │  Renderer  │◄────HTTPS────►│  Engine (Node, headless-capable)     │
+   │  Renderer  │◄────HTTPS────►│  Engine (Node, headless capable)     │
    │  React 19  │  cert pinned  │                                      │
    │ pure client│               │  ingestion → extract → chunk → embed │
-   └────────────┘               │  retrieval (workspace-scoped)        │
+   └────────────┘               │  retrieval (workspace scoped)        │
                                 │  RAG prompt assembly + citations     │
                                 │  auth · audit · retention            │
                                 └──────┬───────────────┬───────────────┘
                                        │               │
                         ┌──────────────▼──┐   ┌────────▼─────────────┐
                         │ SQLCipher DB    │   │ LanceDB vector index │
-                        │ metadata, chunk │   │ embeddings only —    │
+                        │ metadata, chunk │   │ embeddings only,     │
                         │ text, audit     │   │ no document text     │
                         └─────────────────┘   └──────────────────────┘
                                        │
@@ -161,7 +162,7 @@ the document at the cited page.
 The engine is a standalone process, not a library inside the UI. It can run
 headless, which is what makes organization mode possible: the same binary that
 backs the desktop app serves a whole office over the LAN. The renderer holds no
-business logic — it is a pure client of the engine's API, so the security
+business logic. It is a pure client of the engine's API, so the security
 boundary is the API surface rather than a convention.
 
 ## Tech stack
@@ -197,7 +198,7 @@ packages/
     db/            schema + migrations, repositories
     server/        HTTPS server, routes, auth middleware
     auth/ audit/ retention/ security/ export/ diagnostics/
-  ui/              React renderer — views, API client, design tokens
+  ui/              React renderer: views, API client, design tokens
   desktop/         Electron main, preload, engine supervisor, IPC
 scripts/           build tooling, 8 acceptance suites, network audit
 corpus/            synthetic demo documents (fictional, ships with the app)
@@ -239,28 +240,28 @@ npm run verify:all         # build · typecheck · lint · network audit
 
 Files worth a look if you are reviewing the code:
 
-- **`scripts/verify-no-runtime-network.mjs`** — the privacy claim as a build
-  gate rather than a README assertion.
-- **`packages/engine/src/rag/prompt.ts`** — grounded prompt assembly and the
+- **`scripts/verify-no-runtime-network.mjs`** sets out the privacy claim as a
+  build gate rather than a README assertion.
+- **`packages/engine/src/rag/prompt.ts`** holds grounded prompt assembly and the
   deterministic injection fence.
-- **`packages/engine/src/rag/thinking.ts`** — streaming filter that strips a
+- **`packages/engine/src/rag/thinking.ts`** is a streaming filter that strips a
   reasoning model's scratchpad before it can reach the answer, transcript or
   audit log, handling markers split across token boundaries.
-- **`packages/engine/src/inference/scheduler.ts`** — parallel slots, per-user
-  round-robin fairness, and separate budgets for time-to-first-token and
-  mid-stream stalls.
-- **`packages/engine/src/db/schema.ts`** — versioned migrations with the schema
-  version derived from the migration list rather than hand-maintained.
-- **`scripts/fetch-llama-runtime.mjs`** — build-time runtime fetch, pinned by
-  tag and SHA-256 and pruned to the files actually loaded, which is what keeps
-  the shipped app free of any runtime network call.
+- **`packages/engine/src/inference/scheduler.ts`** implements parallel slots,
+  per-user round-robin fairness, and separate budgets for time-to-first-token
+  and mid-stream stalls.
+- **`packages/engine/src/db/schema.ts`** carries versioned migrations, with the
+  schema version derived from the migration list rather than hand-maintained.
+- **`scripts/fetch-llama-runtime.mjs`** performs the build-time runtime fetch,
+  pinned by tag and SHA-256 and pruned to the files actually loaded, which is
+  what keeps the shipped app free of any runtime network call.
 
 **Scale:** ~11,700 lines across 108 TypeScript source files; 121 assertions
 across 8 acceptance suites, run by a single command.
 
 ## Status
 
-**In development — built and working, not shipped.** The app runs, indexes
+**In development. Built and working, not shipped.** The app runs, indexes
 documents and returns grounded, cited answers from a local model. What is *not*
 done:
 
@@ -268,9 +269,9 @@ done:
   proven individually, but no release build exists yet.
 - Model checksums are not yet pinned in the catalogue (`sha256: null`), so
   downloads are size-verified but not hash-verified.
-- Answer quality depends heavily on the chosen model. Small models (1–3 B) will
-  sometimes misstate what a document says — a property of the models, and much
-  of why the citation trail matters.
+- Answer quality depends heavily on the chosen model. Small models of 1 to 3
+  billion parameters will sometimes misstate what a document says. That is a
+  property of the models, and much of why the citation trail matters.
 - Windows only. macOS and Linux are not built.
 
 ## About
@@ -283,5 +284,5 @@ Built by [Emem Ndon](https://github.com/ememndon).
 
 ## Licence
 
-Proprietary — see [LICENSE](LICENSE). Published for review and evaluation; no
+Proprietary. See [LICENSE](LICENSE). Published for review and evaluation; no
 licence to use, copy, modify or distribute is granted.

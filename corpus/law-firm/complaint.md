@@ -1,4 +1,4 @@
-FICTIONAL DEMO DOCUMENT — for QueryLoad demonstration only. Any resemblance to real persons or entities is coincidental.
+FICTIONAL DEMO DOCUMENT. For QueryLoad demonstration only. Any resemblance to real persons or entities is coincidental.
 
 IN THE SUPERIOR COURT OF THE STATE OF WESTFIELD
 COUNTY OF MARLOWE

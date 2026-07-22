@@ -1,6 +1,6 @@
-FICTIONAL DEMO DOCUMENT — for QueryLoad demonstration only.
+FICTIONAL DEMO DOCUMENT. For QueryLoad demonstration only.
 
-MASTER SUPPLY AGREEMENT — KEY TERMS (Acme Provisions LLC / Globex Distribution Inc.)
+MASTER SUPPLY AGREEMENT: KEY TERMS (Acme Provisions LLC / Globex Distribution Inc.)
 Effective date: 12 January 2023
 
 1. GOODS. Organic apples, Grade A, packed in standard 18 kg crates.

@@ -1,4 +1,4 @@
-# QueryLoad — Threat Model
+# QueryLoad Threat Model
 
 **Version 1.0 · ships with the app (D51).**
 
@@ -11,13 +11,13 @@ just as importantly, **what it does not**. We do not overstate our guarantees.
 Confidential document content exists in exactly **two** places: your original
 files, and **one encrypted index folder** beside them. QueryLoad never copies,
 syncs, or transmits document content anywhere else. We do **not** say "we never
-store your data" — that would be false. We say: your content lives in your files
+store your data", because that would be false. We say: your content lives in your files
 and in one encrypted index, and nothing leaves the building.
 
 ## What QueryLoad protects against
 
 - **Network exfiltration.** After installation the app makes zero network calls
-  at runtime — no telemetry, analytics, CDN fonts, or update pings. The only
+  at runtime, meaning no telemetry, analytics, CDN fonts, or update pings. The only
   network activity is the explicit, user-initiated model download at first run,
   and (in organization mode) LAN traffic between clients and the office server.
   This is enforced structurally: the engine binds to loopback, the renderer's
@@ -26,7 +26,7 @@ and in one encrypted index, and nothing leaves the building.
 - **Data at rest.** The metadata database (all document text, file paths, chat
   history, and the audit log) is encrypted with SQLCipher. The key is sealed by
   Windows DPAPI, tied to the current user or machine. The vector index stores
-  only numeric embeddings and opaque ids — never document text.
+  only numeric embeddings and opaque ids, never document text.
 - **Transport.** All client↔engine traffic uses TLS, including on localhost.
   Clients pin the engine's self-signed certificate; the join code is the trust
   bootstrap in organization mode.
